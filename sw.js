@@ -13,3 +13,4 @@ self.addEventListener("activate", evt=>{
  self.addEventListener("fetch",evt=>{
    console.log("fetch just happened",evt)
  })
+ /// change 
