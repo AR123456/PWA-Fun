@@ -1,5 +1,5 @@
 // const for the application shell cashe
-const staticCacheName = "site-static";
+const staticCacheName = "site-static-v2";
 // const for assets array - array of requests
 const assets = [
   // the request urls (key) the cache gets the value
@@ -31,9 +31,29 @@ self.addEventListener("install", (evt) => {
 });
 
 // activate event
-
 self.addEventListener("activate", (evt) => {
   // console.log("servicer just got activated ")
+  // remove/delete the old cache
+  evt.waitUntil(
+    // async returns a promise - looks for keys and returns them
+    caches.keys().then((keys) => {
+      // console.log(keys);
+      // now need to do several async tasks - could be several old caches
+      // need to wait for each one to delete then go to the next
+      // Promise.all takes an array of promises and waits till all in the array
+      // have returned before going on
+      return Promise.all(
+        keys
+          // does the key of that cache not eq the current staticCacheName ?
+          // if it is not equal then remove it, filter it out so
+          //put it into the new array that we are going to del
+          .filter((key) => key !== staticCacheName)
+          // then map to an array of promises to del
+          .map((key) => caches.delete(key))
+        // when all have been del the "Promise.all" is returned
+      );
+    })
+  );
 });
 
 // fetch event
