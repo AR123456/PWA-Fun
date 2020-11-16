@@ -57,23 +57,27 @@ self.addEventListener("fetch", (evt) => {
         return (
           cacheRes ||
           fetch(evt.request).then((fetchRes) => {
-            // in here take what is returned to us and store it in the cache
-            // so we can serve up this new page if user goes off line
-            // so use the const dynamic cache
             return caches.open(dynamicCacheName).then((cache) => {
-              // put this response in this cache
-              // need 2 args the resoruce url and the response (key value)
-              // need to use a copy of fetchRes so that we do not use it up
               cache.put(evt.request.url, fetchRes.clone());
-              // here is were we need to use fetchRes
+
               return fetchRes;
             });
           })
         );
       })
-      // this catch() will be used when fetch(evt.request) fails because there is
-      // not content for that page the user wants to navigate to because they are offline
-      // retun caches.match with the fallack page inside of it
-      .catch(() => caches.match("/pages/fallback.html"))
+
+      .catch(() => {
+        // adding conditional here to check the kind of request that is being made
+        // only retun if an html page
+        // still have access to event object so go it, request, url and use
+        // indexOf() to look for the index of .html
+        // indexOf searches a string for whatever we put in
+        // it returns an integer which is the postion of .html
+        // if .html is not inside of the url indexOf returns -1
+        // so only return if greater than -1
+        if (evt.request.url.indexOf(".html") > -1) {
+          return caches.match("/pages/fallback.html");
+        }
+      })
   );
 });
