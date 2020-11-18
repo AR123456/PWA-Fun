@@ -17,6 +17,26 @@ const assets = [
   "https://fonts.googleapis.com/icon?family=Material+Icons",
   "/pages/fallback.html",
 ];
+// cache size limit function
+// create function we are going to call if in the fetch event
+// takes in the name of the cache we want to limit the size of and the limit size in number of items
+const limitCacheSize = (name, size) => {
+  // async, promise so .then
+  caches.open(name).then((cache) => {
+    // keys is an array - it is the list of assets from cache
+    cache.keys().then((keys) => {
+      // is the array over the size?
+      if (keys.length > size) {
+        // deleteing the first item in the array whichh is the oldest
+        cache
+          .delete(keys[0])
+          // async so .then, call the limitCacheSize funciton again
+          // doing this untill the keys.length > 1 is no longer true
+          .then(limitCacheSize(name, size));
+      }
+    });
+  });
+};
 
 // install service worker
 self.addEventListener("install", (evt) => {
@@ -59,7 +79,9 @@ self.addEventListener("fetch", (evt) => {
           fetch(evt.request).then((fetchRes) => {
             return caches.open(dynamicCacheName).then((cache) => {
               cache.put(evt.request.url, fetchRes.clone());
-
+              // do call limit cache size here so we dont put too much stuff into cache
+              // pass in name and limit
+              limitCacheSize(dynamicCacheName, 15);
               return fetchRes;
             });
           })
@@ -67,14 +89,6 @@ self.addEventListener("fetch", (evt) => {
       })
 
       .catch(() => {
-        // adding conditional here to check the kind of request that is being made
-        // only retun if an html page
-        // still have access to event object so go it, request, url and use
-        // indexOf() to look for the index of .html
-        // indexOf searches a string for whatever we put in
-        // it returns an integer which is the postion of .html
-        // if .html is not inside of the url indexOf returns -1
-        // so only return if greater than -1
         if (evt.request.url.indexOf(".html") > -1) {
           return caches.match("/pages/fallback.html");
         }
