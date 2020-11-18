@@ -128,20 +128,16 @@
     </div>
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-firestore-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-firestore.js"></script>
 
     <script>
       // Your web app's Firebase configuration
       var firebaseConfig = {};
       // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
-      // also need to initialize the db instance from the
-      //front end so that we can communicate with the db from here
-      //  now we use db to communicate
+      firebase.initializeApp(config);
       const db = firebase.firestore();
     </script>
     <script src="/js/app.js"></script>
-    <!-- link to the js file for db communications  -->
     <script src="/js/db.js"></script>
     <script src="/js/ui.js"></script>
   </body>

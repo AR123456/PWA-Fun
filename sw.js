@@ -67,31 +67,26 @@ self.addEventListener("activate", (evt) => {
 // fetch event
 // looking for each fetch event here
 self.addEventListener("fetch", (evt) => {
-  //  console.log("fetch just happened",evt)
-  evt.respondWith(
-    // look here do we have a resouce stored ?  if so return it.
-    caches
-      .match(evt.request)
-      .then((cacheRes) => {
-        // the fetch(evt.request) is asyncronis so we can attach a .then
-        return (
-          cacheRes ||
-          fetch(evt.request).then((fetchRes) => {
-            return caches.open(dynamicCacheName).then((cache) => {
-              cache.put(evt.request.url, fetchRes.clone());
-              // do call limit cache size here so we dont put too much stuff into cache
-              // pass in name and limit
-              limitCacheSize(dynamicCacheName, 15);
-              return fetchRes;
-            });
-          })
-        );
-      })
-
-      .catch(() => {
-        if (evt.request.url.indexOf(".html") > -1) {
-          return caches.match("/pages/fallback.html");
-        }
-      })
-  );
+  // //  console.log("fetch just happened",evt)
+  // evt.respondWith(
+  //   caches
+  //     .match(evt.request)
+  //     .then((cacheRes) => {
+  //       return (
+  //         cacheRes ||
+  //         fetch(evt.request).then((fetchRes) => {
+  //           return caches.open(dynamicCacheName).then((cache) => {
+  //             cache.put(evt.request.url, fetchRes.clone());
+  //             limitCacheSize(dynamicCacheName, 15);
+  //             return fetchRes;
+  //           });
+  //         })
+  //       );
+  //     })
+  //     .catch(() => {
+  //       if (evt.request.url.indexOf(".html") > -1) {
+  //         return caches.match("/pages/fallback.html");
+  //       }
+  //     })
+  // );
 });
