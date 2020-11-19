@@ -1,7 +1,7 @@
 // const for the application shell cashe
-const staticCacheName = "site-static-v2";
+const staticCacheName = "site-static-v3";
 // this is a different cache to be used of pages beyond the home page
-const dynamicCacheName = "site-dynamic-v1";
+const dynamicCacheName = "site-dynamic-v2";
 
 // const for assets array - array of requests
 const assets = [
@@ -18,8 +18,6 @@ const assets = [
   "/pages/fallback.html",
 ];
 // cache size limit function
-// create function we are going to call if in the fetch event
-// takes in the name of the cache we want to limit the size of and the limit size in number of items
 const limitCacheSize = (name, size) => {
   // async, promise so .then
   caches.open(name).then((cache) => {
@@ -68,25 +66,32 @@ self.addEventListener("activate", (evt) => {
 // looking for each fetch event here
 self.addEventListener("fetch", (evt) => {
   // //  console.log("fetch just happened",evt)
-  // evt.respondWith(
-  //   caches
-  //     .match(evt.request)
-  //     .then((cacheRes) => {
-  //       return (
-  //         cacheRes ||
-  //         fetch(evt.request).then((fetchRes) => {
-  //           return caches.open(dynamicCacheName).then((cache) => {
-  //             cache.put(evt.request.url, fetchRes.clone());
-  //             limitCacheSize(dynamicCacheName, 15);
-  //             return fetchRes;
-  //           });
-  //         })
-  //       );
-  //     })
-  //     .catch(() => {
-  //       if (evt.request.url.indexOf(".html") > -1) {
-  //         return caches.match("/pages/fallback.html");
-  //       }
-  //     })
-  // );
+  // we do not want to cache any of the data responses from google firestore,
+  // we are handling that with enabledataPersistance()
+  // so make sure the request  in the 0 position of the
+  // array doenet include a  request to google firestore
+  if (evt.request.url.indexOf("firestore.googleapis.com") === -1) {
+    ///un comment out the serice worker
+    evt.respondWith(
+      caches
+        .match(evt.request)
+        .then((cacheRes) => {
+          return (
+            cacheRes ||
+            fetch(evt.request).then((fetchRes) => {
+              return caches.open(dynamicCacheName).then((cache) => {
+                cache.put(evt.request.url, fetchRes.clone());
+                limitCacheSize(dynamicCacheName, 15);
+                return fetchRes;
+              });
+            })
+          );
+        })
+        .catch(() => {
+          if (evt.request.url.indexOf(".html") > -1) {
+            return caches.match("/pages/fallback.html");
+          }
+        })
+    );
+  }
 });
