@@ -19,31 +19,35 @@ db.collection("recipes").onSnapshot((snapshot) => {
     }
     if (change.type === "removed") {
       // remove the document data from the web page
+      // getting the id of the document that was just removed
+      removeRecipe(change.doc.id);
     }
   });
 });
 
 // add new recipe
-// const to get ref from DOM
+
 const form = document.querySelector("form");
-// add Event Listener for the  submit event and fire a call back
-// when it happens (evt)
 form.addEventListener("submit", (evt) => {
-  // the default action of a form on submit it is to refresh the page
-  // so preventing that
   evt.preventDefault();
-  // object that represents a new recipe
   const recipe = {
-    // can use the id of title to get referance from form
     title: form.title.value,
     ingredients: form.ingredients.value,
   };
-  // add this object as a document in the db
   db.collection("recipes")
     .add(recipe)
     .catch((err) => console.log(err));
-  // set the title and ingredients feild value back to null
-  // could have also used the reset method
   form.title.value = "";
   form.ingredients.value = "";
+});
+// delete a recipe
+const recipeContainer = document.querySelector(".recipes");
+recipeContainer.addEventListener("click", (evt) => {
+  // console.log(evt);
+  if (evt.target.tagName === "I") {
+    // get by data attribute
+    const id = evt.target.getAttribute("data-id");
+    // pass in the id of the document we want to get from the firestore collection
+    db.collection("recipes").doc(id).delete();
+  }
 });

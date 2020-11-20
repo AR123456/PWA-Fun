@@ -6,6 +6,7 @@
     <title>Food Ninja</title>
     <!-- materialize icons, css & js -->
     <link type="text/css" href="/css/materialize.min.css" rel="stylesheet" />
+
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
@@ -48,7 +49,6 @@
     <div class="recipes container grey-text text-darken-1">
       <h6 class="center">My Best Recipes</h6>
     </div>
-
     <div class="center">
       <a
         class="btn-floating btn-small btn-large add-btn sidenav-trigger"
@@ -57,7 +57,6 @@
         <i class="material-icons">add</i>
       </a>
     </div>
-
     <!-- add recipe side nav -->
     <div id="side-form" class="sidenav side-form">
       <form class="add-recipe container section">
@@ -93,11 +92,11 @@
     <script>
       // Your web app's Firebase configuration
       // var firebaseConfig = {
-      //   apiKey: 9",
+
       // };
       /////////resouce for fixed syntax
       // https://firebase.google.com/docs/firestore/quickstart
-      /////////////////////////////////////
+
       // Initialize Firebase
       firebase.initializeApp({});
       const db = firebase.firestore();

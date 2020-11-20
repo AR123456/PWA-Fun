@@ -19,11 +19,20 @@ const renderRecipe = (data, id) => {
       <div class="recipe-ingredients">${data.ingredients}</div>
     </div>
     <div class="recipe-delete">
-      <i class="material-icons" data-id="${id} >delete_outline</i>
+      <i class="material-icons" data-id="${id}" >delete_outline</i>
     </div>
   </div>`;
 
   // append html to the recipes div
 
   recipes.innerHTML += html;
+};
+
+// revmove recipe from DOM
+const removeRecipe = (id) => {
+  // attribute selector in css
+  // so have ref to the recipe we want to del
+  const recipe = document.querySelector(`.recipe[data-id=${id}]`);
+  //method to remove from DOM
+  recipe.remove();
 };

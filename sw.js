@@ -1,7 +1,7 @@
 // const for the application shell cashe
-const staticCacheName = "site-static-v3";
+const staticCacheName = "site-static-v6";
 // this is a different cache to be used of pages beyond the home page
-const dynamicCacheName = "site-dynamic-v3";
+const dynamicCacheName = "site-dynamic-v8";
 
 // const for assets array - array of requests
 const assets = [
